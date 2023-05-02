@@ -1,5 +1,6 @@
 package com.transportation.comfortbus.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.transportation.comfortbus.entity.converter.UserRoleEntityConverter;
 import com.transportation.comfortbus.entity.enumeration.UserRole;
 import jakarta.persistence.*;
@@ -9,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -41,5 +43,18 @@ public class UserEntity {
     @Column(name = "role")
     @Convert(converter = UserRoleEntityConverter.class)
     private UserRole role;
+
+    @JsonIgnore
+    @OneToMany(mappedBy="administrator")
+    private Set<RideEntity> administratorRides;
+
+    @JsonIgnore
+    @OneToMany(mappedBy="driver")
+    private Set<RideEntity> driverRides;
+
+    @JsonIgnore
+    @OneToMany(mappedBy="client")
+    private Set<TicketBookingEntity> tickets;
+
 
 }

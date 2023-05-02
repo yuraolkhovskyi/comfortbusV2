@@ -1,5 +1,6 @@
 package com.transportation.comfortbus.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.transportation.comfortbus.entity.converter.PaymentTypeEntityConverter;
 import com.transportation.comfortbus.entity.converter.TicketBookingStatusEntityConverter;
 import com.transportation.comfortbus.entity.enumeration.PaymentType;
@@ -9,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -39,8 +42,27 @@ public class TicketBookingEntity {
     @Convert(converter = PaymentTypeEntityConverter.class)
     private PaymentType paymentType;
 
-    //ride_id
-    //user_id
-    //banking_card_details_id
+    @ManyToOne
+    @JoinColumn(name="ride_id")
+    private RideEntity ride;
+
+    @ManyToOne
+    @JoinColumn(name="banking_card_id")
+    private BankingCardEntity bankingCard;
+
+    @ManyToOne
+    @JoinColumn(name="client_id")
+    private UserEntity client;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "booking_passenger_seat",
+            joinColumns = @JoinColumn(name = "ticket_booking_id"),
+            inverseJoinColumns = @JoinColumn(name = "passenger_seat_id")
+    )
+    private Set<PassengerSeatEntity> passengerSeats;
+
+
 }
 

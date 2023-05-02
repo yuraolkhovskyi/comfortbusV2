@@ -30,6 +30,9 @@ public class IntermediateStopEntity {
     @JoinColumn(name="ride_id")
     private RideEntity ride;
 
+    @ManyToOne
+    @JoinColumn(name="vehicle_station_id")
+    private VehicleStationEntity vehicleStation;
 
 
     //ride_id

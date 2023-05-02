@@ -1,5 +1,6 @@
 package com.transportation.comfortbus.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.transportation.comfortbus.entity.converter.VehicleStatusEntityConverter;
 import com.transportation.comfortbus.entity.converter.VehicleTypeEntityConverter;
 import com.transportation.comfortbus.entity.enumeration.VehicleStatus;
@@ -9,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -81,5 +84,12 @@ public class VehicleEntity {
     @Column(name = "is_double_decker")
     private Boolean isDoubleDecker;
 
+    @JsonIgnore
+    @OneToMany(mappedBy="vehicle")
+    private Set<RideEntity> rides;
+
+    @JsonIgnore
+    @OneToMany(mappedBy="vehicle")
+    private Set<PassengerSeatEntity> passengerSeats;
 
 }

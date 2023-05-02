@@ -1,10 +1,13 @@
 package com.transportation.comfortbus.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -27,5 +30,13 @@ public class PassengerSeatEntity {
     @Column(name = "address")
     private String address;
 
-    //bus id
+    @ManyToOne
+    @JoinColumn(name="vehicle_id")
+    private VehicleEntity vehicle;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "passengerSeats")
+    private Set<TicketBookingEntity> tickets;
+
+
 }
