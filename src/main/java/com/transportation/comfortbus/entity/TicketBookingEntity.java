@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -32,11 +33,15 @@ public class TicketBookingEntity {
     @Column(name = "bicycle_items")
     private Integer bicycleItems;
 
+    @Column(name = "booking_date")
+    private LocalDateTime bookingDate;
+
+
     @Column(name = "additional_luggage_items")
     private Integer additionalLuggageItems;
 
     @Column(name = "additional_user_comments")
-    private Integer additionalUserComments;
+    private String additionalUserComments;
 
     @Column(name = "payment_type")
     @Convert(converter = PaymentTypeEntityConverter.class)

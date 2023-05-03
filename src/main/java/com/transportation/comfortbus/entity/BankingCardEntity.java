@@ -27,13 +27,16 @@ public class BankingCardEntity {
     private BankingCardStatus status;
 
     @Column(name = "number")
-    private Integer cardNumber;
+    private String cardNumber;
 
     @Column(name = "cvcCode")
     private Integer cvcCode;
 
     @Column(name = "expiration_date")
     private LocalDateTime expirationDate;
+
+    @Column(name = "owner")
+    private String owner;
 
     @JsonIgnore
     @OneToMany(mappedBy="bankingCard")

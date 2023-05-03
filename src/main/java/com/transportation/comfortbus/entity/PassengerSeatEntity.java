@@ -27,9 +27,6 @@ public class PassengerSeatEntity {
     @Column(name = "place_identifier")
     private String placeIdentifier;
 
-    @Column(name = "address")
-    private String address;
-
     @ManyToOne
     @JoinColumn(name="vehicle_id")
     private VehicleEntity vehicle;

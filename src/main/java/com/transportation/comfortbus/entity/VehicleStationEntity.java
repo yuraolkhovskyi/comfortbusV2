@@ -1,7 +1,18 @@
 package com.transportation.comfortbus.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import com.transportation.comfortbus.entity.converter.CountryCodeEntityConverter;
+import com.transportation.comfortbus.entity.enumeration.CountryCode;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +33,9 @@ public class VehicleStationEntity {
     private Long id;
 
     @Column(name = "country")
-    private String country;
+    @Enumerated(EnumType.ORDINAL)
+    @Convert(converter = CountryCodeEntityConverter.class)
+    private CountryCode country;
 
     @Column(name = "city")
     private String city;
@@ -39,7 +52,7 @@ public class VehicleStationEntity {
     private Set<RideEntity> arrivalStationRides;
 
     @JsonIgnore
-    @OneToMany(mappedBy="")
+    @OneToMany(mappedBy="vehicleStation")
     private Set<IntermediateStopEntity> intermediateStops;
 
 
