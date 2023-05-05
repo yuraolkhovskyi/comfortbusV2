@@ -6,14 +6,12 @@ import com.transportation.comfortbus.entity.converter.VehicleTypeEntityConverter
 import com.transportation.comfortbus.entity.enumeration.VehicleStatus;
 import com.transportation.comfortbus.entity.enumeration.VehicleType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -29,7 +27,6 @@ public class VehicleEntity {
     @Enumerated(EnumType.ORDINAL)
     @Convert(converter = VehicleTypeEntityConverter.class)
     private VehicleType type;
-
 
     @Column(name = "country_identifier")
     private String countryIdentifier;

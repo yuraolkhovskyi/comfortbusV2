@@ -2,14 +2,12 @@ package com.transportation.comfortbus.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -27,6 +25,7 @@ public class PassengerSeatEntity {
     @Column(name = "place_identifier")
     private String placeIdentifier;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="vehicle_id")
     private VehicleEntity vehicle;

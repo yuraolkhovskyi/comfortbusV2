@@ -1,13 +1,15 @@
 insert into yuriiolkhovskiy.public.vehicle_stations(id, address, city, country)
 values
-    (1, 'BS-2, Khmelnytskogo Street 2', 'Lviv', 0),
-    (2, 'BS-1, Naukova Street,66', 'Lutsk', 0),
-    (3, 'BS-31, Novinski Street 94', 'Lublin', 1),
-    (4, 'BS-84, Gzezgozh Rovinski Street 37', 'Warszawa', 1),
-    (5, 'BS-84, Mariuszh Novinski Street 17', 'Poznan', 1),
-    (6, 'BS-84, Jadencgeer Street 11', 'Brandenburg', 2),
-    (7, 'BS-77, Deusbageee Street 93', 'Bohum', 2),
-    (8, 'BS-74, Jauneree Street 23', 'Paris', 3);
+    (1, 'BS-2, Khmelnytskogo Street, 2', 'Lviv', 0),
+    (2, 'BS-1, Naukova Street, 66', 'Lutsk', 0),
+    (3, 'BS-31, Novinski Street, 94', 'Lublin', 1),
+    (4, 'BS-84, Gzezgozh Rovinski Street, 37', 'Warszawa', 1),
+    (5, 'BS-84, Mariuszh Novinski Street, 17', 'Poznan', 1),
+    (6, 'BS-84, Jadencgeer Street, 11', 'Brandenburg', 2),
+    (7, 'BS-77, Deusbageee Street, 93', 'Bohum', 2),
+    (8, 'BS-74, Jauneree Street, 23', 'Paris', 3),
+    (9, 'BS-23, Nasponski Street, 68', 'Lublin', 1),
+    (10, 'BS-1, Charovski Street, 334', 'Zamosc', 1);
 
 
 insert into yuriiolkhovskiy.public.vehicles(id,
@@ -78,12 +80,12 @@ VALUES
     (7, 'jane35221@gmail.com', 'Jane', 'Jason', '$2a$10$t5Oe5eckAVHwQlmO7F4ypO2fkhAJjM.E49/eFIVoW0k/fN69TUiR2', '2023-01-01', 0),
     (8, 'ivan35221@gmail.com', 'Ivan', 'Ivanov', '$2a$10$t5Oe5eckAVHwQlmO7F4ypO2fkhAJjM.E49/eFIVoW0k/fN69TUiR2', '2023-01-01', 0);
 
-insert into yuriiolkhovskiy.public.rides(id, arrival_date, departure_date, is_direct, price, status, administrator_id,
+insert into yuriiolkhovskiy.public.rides(id, departure_date, arrival_date, is_direct, price, status, administrator_id,
                                          arrival_station_id, departure_station_id, driver_id, vehicle_id)
 values
-    ('b33c7aea-e990-11ed-a05b-0242ac120003', '2023-06-01', '2023-06-01', true, 500, 0, 3, 4, 1, 2, 1),
-    ('1a3779d4-e991-11ed-a05b-0242ac120003', '2023-06-26', '2023-06-27', true, 1500, 0, 6, 5, 4, 5, 2),
-    ('22a1d8ee-e991-11ed-a05b-0242ac120003', '2023-07-15', '2023-07-15', false, 2000, 0, 3, 6, 2, 5, 5);
+    ('b33c7aea-e990-11ed-a05b-0242ac120003', '2023-06-01 13:00:00', '2023-06-01 22:00:00', true, 500, 0, 3, 4, 1, 2, 1),
+    ('1a3779d4-e991-11ed-a05b-0242ac120003', '2023-06-26 12:50:00', '2023-06-26 22:50:00', true, 1500, 0, 6, 4, 1, 5, 2),
+    ('22a1d8ee-e991-11ed-a05b-0242ac120003', '2023-06-01 06:00:00', '2023-06-01 23:00:00', false, 2000, 0, 3, 6, 2, 5, 5);
 
 insert into yuriiolkhovskiy.public.tickets_bookings(id, additional_luggage_items, additional_user_comments, bicycle_items,
                                                     booking_date, payment_type, status, banking_card_id, client_id, ride_id)
@@ -99,15 +101,15 @@ VALUES
     (1, 1),
     (1, 2),
     (2, 3),
-    (3, 3),
     (3, 4),
     (3, 5),
-    (4, 6),
+    (3, 6),
     (4, 7),
     (4, 8),
-    (4, 9);
+    (4, 9),
+    (4, 10);
 
-INSERT INTO yuriiolkhovskiy.public.intermediate_stops (id, stop_end_time, stop_start_time, ride_id, vehicle_station_id)
+INSERT INTO yuriiolkhovskiy.public.intermediate_stops (id, stop_start_time, stop_end_time, ride_id, vehicle_station_id)
 VALUES
-    (1, '2023-06-26 16:30:00', '2023-06-26 16:00:00', '1a3779d4-e991-11ed-a05b-0242ac120003', 5),
-    (2, '2023-06-26 23:30:00', '2023-06-26 23:00:00', '1a3779d4-e991-11ed-a05b-0242ac120003', 6);
+    (1, '2023-06-26 13:30:00', '2023-06-26 13:40:00', '1a3779d4-e991-11ed-a05b-0242ac120003', 9),
+    (2, '2023-06-26 20:30:00', '2023-06-26 20:40:00', '1a3779d4-e991-11ed-a05b-0242ac120003', 10);

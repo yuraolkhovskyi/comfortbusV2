@@ -1,14 +1,13 @@
 package com.transportation.comfortbus.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -26,17 +25,14 @@ public class IntermediateStopEntity {
     @Column(name = "stop_end_time")
     private LocalDateTime stopEndTime;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="ride_id")
     private RideEntity ride;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="vehicle_station_id")
     private VehicleStationEntity vehicleStation;
-
-
-    //ride_id
-
-    //station_id
 
 }

@@ -6,15 +6,13 @@ import com.transportation.comfortbus.entity.converter.TicketBookingStatusEntityC
 import com.transportation.comfortbus.entity.enumeration.PaymentType;
 import com.transportation.comfortbus.entity.enumeration.TicketBookingStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -27,6 +25,7 @@ public class TicketBookingEntity {
     private Long id;
 
     @Column(name = "status")
+    @Enumerated(EnumType.ORDINAL)
     @Convert(converter = TicketBookingStatusEntityConverter.class)
     private TicketBookingStatus status;
 
@@ -47,14 +46,17 @@ public class TicketBookingEntity {
     @Convert(converter = PaymentTypeEntityConverter.class)
     private PaymentType paymentType;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="ride_id")
     private RideEntity ride;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="banking_card_id")
     private BankingCardEntity bankingCard;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="client_id")
     private UserEntity client;
