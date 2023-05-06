@@ -1,13 +1,11 @@
 package com.transportation.comfortbus.dto;
 
-import com.transportation.comfortbus.entity.TicketBookingEntity;
 import com.transportation.comfortbus.entity.enumeration.BankingCardStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor

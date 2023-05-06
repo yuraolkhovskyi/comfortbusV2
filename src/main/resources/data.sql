@@ -59,7 +59,22 @@ values
     (13, 'A', 4, 2),
     (14, 'B', 4, 2),
     (15, 'C', 4, 2),
-    (16, 'D', 4, 2);
+    (16, 'D', 4, 2),
+
+    (17, 'A', 5, 2),
+    (18, 'B', 5, 2),
+    (19, 'C', 5, 2),
+    (20, 'D', 5, 2),
+
+    (21, 'A', 6, 2),
+    (22, 'B', 6, 2),
+    (23, 'C', 6, 2),
+    (24, 'D', 6, 2),
+
+    (25, 'A', 7, 2),
+    (26, 'B', 7, 2),
+    (27, 'C', 7, 2),
+    (28, 'D', 7, 2);
 
 
 insert into yuriiolkhovskiy.public.banking_card(id, number, cvc_code, expiration_date, owner, status)
@@ -91,9 +106,9 @@ insert into yuriiolkhovskiy.public.tickets_bookings(id, additional_luggage_items
                                                     booking_date, payment_type, status, banking_card_id, client_id, ride_id)
 values
     (1, 0, 'additional comments', 0, '2023-06-20', 0, 0, null, 1, '1a3779d4-e991-11ed-a05b-0242ac120003'),
-    (2, 2, '-', 0, '2023-06-21', 1, 0, 2, 4, '1a3779d4-e991-11ed-a05b-0242ac120003'),
-    (3, 0, '-', 1, '2023-06-22', 1, 0, 3, 7, '1a3779d4-e991-11ed-a05b-0242ac120003'),
-    (4, 1, 'additional comments', 0, '2023-06-25', 1, 0, 4, 8, '1a3779d4-e991-11ed-a05b-0242ac120003');
+    (2, 2, '-', 0, '2023-06-21 13:00:00', 1, 0, 2, 4, '1a3779d4-e991-11ed-a05b-0242ac120003'),
+    (3, 0, '-', 1, '2023-06-22 14:00:00', 1, 0, 3, 7, '1a3779d4-e991-11ed-a05b-0242ac120003'),
+    (4, 1, 'additional comments', 0, '2023-06-25 15:00:00', 1, 0, 4, 8, '1a3779d4-e991-11ed-a05b-0242ac120003');
 
 
 INSERT INTO yuriiolkhovskiy.public.booking_passenger_seat (ticket_booking_id, passenger_seat_id)

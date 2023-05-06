@@ -1,5 +1,6 @@
 package com.transportation.comfortbus.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.transportation.comfortbus.entity.*;
 import com.transportation.comfortbus.entity.enumeration.PaymentType;
 import com.transportation.comfortbus.entity.enumeration.TicketBookingStatus;
@@ -23,9 +24,10 @@ public class TicketDTO {
     private String additionalUserComments;
     private PaymentType paymentType;
 
+    @JsonIgnore
     private RideEntity ride;
-    private BankingCardEntity bankingCard;
-    private UserEntity client;
+    private BankingCardDTO bankingCard;
+    private UserDTO client;
     private Set<PassengerSeatEntity> passengerSeats;
 
 }

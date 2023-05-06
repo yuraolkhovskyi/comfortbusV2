@@ -2,10 +2,11 @@ package com.transportation.comfortbus.service.impl;
 
 import com.transportation.comfortbus.dto.*;
 import com.transportation.comfortbus.entity.*;
+import com.transportation.comfortbus.entity.enumeration.RideStatus;
 import com.transportation.comfortbus.exception.SystemException;
 import com.transportation.comfortbus.exception.code.ServiceErrorCode;
 import com.transportation.comfortbus.repository.RideRepository;
-import com.transportation.comfortbus.service.RideService;
+import com.transportation.comfortbus.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -20,6 +21,11 @@ import java.util.stream.Collectors;
 public class RideServiceImpl implements RideService {
 
     private final RideRepository rideRepository;
+    private final CoordinatesService coordinatesService;
+    private final VehicleStationService vehicleStationService;
+    private final VehicleService vehicleService;
+    private final UserService userService;
+    private final IntermediateStopService intermediateStopService;
     private final ModelMapper modelMapper;
 
     @Override
@@ -32,6 +38,28 @@ public class RideServiceImpl implements RideService {
         return rideDTOS.stream()
                 .filter(rideDTO -> isMatchingTheCriteria(searchRideRequestDTO, rideEntities, rideDTO))
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public RideStatusDTO getRideStatus(final UUID rideId) {
+        final RideDTO rideDTO = mapRideFromEntityToDTO(findById(rideId));
+
+        final RideStatusDTO result = new RideStatusDTO();
+        switch (Objects.requireNonNull(rideDTO).getStatus()) {
+            case ACTIVE -> result.setRideStatus(RideStatus.ACTIVE);
+            case IN_RIDE -> result
+                    .setRideStatus(RideStatus.IN_RIDE)
+                    .setCoordinates(coordinatesService.getCoordinatesByRideId(rideId));
+            case FINISHED -> result.setRideStatus(RideStatus.FINISHED);
+            case CANCELLED -> result.setRideStatus(RideStatus.CANCELLED);
+        }
+
+        return result;
+    }
+
+    @Override
+    public RideEntity findById(final UUID rideId) {
+        return rideRepository.findById(rideId).orElseThrow();
     }
 
     private boolean isMatchingTheCriteria(final SearchRideRequestDTO searchRideRequestDTO,
@@ -179,17 +207,13 @@ public class RideServiceImpl implements RideService {
 
             final RideDTO rideDTO = modelMapper.map(rideEntity, RideDTO.class);
 
-            rideDTO.setIntermediateStops(mapIntermediateStopsFromEntityToDTO(rideEntity));
+            rideDTO.setIntermediateStops(intermediateStopService.mapIntermediateStopsFromEntityToDTO(rideEntity));
 
             final Integer numberOfFreeSeatsLeft = calculateNumberOfSeatsLeft(rideEntity);
             rideDTO.setNumberOfTicketsLeft(numberOfFreeSeatsLeft);
 
 
-            rideDTO.setDepartureStation(mapVehicleStationFromEntityToDTO(rideEntity.getDepartureStation()));
-            rideDTO.setArrivalStation(mapVehicleStationFromEntityToDTO(rideEntity.getArrivalStation()));
-            rideDTO.setVehicleDTO(mapVehicleFromEntityToDTO(rideEntity.getVehicle()));
-            rideDTO.setAdministrator(mapUserFromEntityToDTO(rideEntity.getAdministrator()));
-            rideDTO.setDriver(mapUserFromEntityToDTO(rideEntity.getDriver()));
+            common(rideEntity, rideDTO);
 
             result.add(rideDTO);
 
@@ -197,22 +221,19 @@ public class RideServiceImpl implements RideService {
         return result;
     }
 
+    private void common(RideEntity rideEntity, RideDTO rideDTO) {
+        rideDTO.setDepartureStation(vehicleStationService.mapVehicleStationFromEntityToDTO(rideEntity.getDepartureStation()));
+        rideDTO.setArrivalStation(vehicleStationService.mapVehicleStationFromEntityToDTO(rideEntity.getArrivalStation()));
+        rideDTO.setVehicleDTO(vehicleService.mapVehicleFromEntityToDTO(rideEntity.getVehicle()));
+        rideDTO.setAdministrator(userService.mapUserFromEntityToDTO(rideEntity.getAdministrator()));
+        rideDTO.setDriver(userService.mapUserFromEntityToDTO(rideEntity.getDriver()));
+    }
+
     private Integer calculateNumberOfSeatsLeft(RideEntity rideEntity) {
         return rideEntity.getVehicle().getNumberOfSeats() - getNumberOfTotalBookedSeats(rideEntity.getTickets());
     }
 
     private Integer getNumberOfTotalBookedSeats(final Set<TicketBookingEntity> tickets) {
-//
-//        for (TicketBookingEntity ticket : tickets) {
-//
-//            final TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
-//
-//
-//            mapRideFromEntityToDTO(ticket.getRide())
-//
-//        }
-
-
         int sum = 0;
         for (TicketBookingEntity ticket : tickets) {
             Set<PassengerSeatEntity> passengerSeats = ticket.getPassengerSeats();
@@ -224,33 +245,14 @@ public class RideServiceImpl implements RideService {
     }
 
     private RideDTO mapRideFromEntityToDTO(final RideEntity rideEntity) {
-        modelMapper.map(rideEntity, RideDTO.class);
-        return null;
+        final RideDTO rideDTO = modelMapper.map(rideEntity, RideDTO.class);
+        common(rideEntity, rideDTO);
+        rideDTO.setIntermediateStops(intermediateStopService.mapIntermediateStopsFromEntityToDTO(rideEntity));
+
+        return rideDTO;
     }
 
-    private UserDTO mapUserFromEntityToDTO(final UserEntity administrator) {
-        return modelMapper.map(administrator, UserDTO.class);
-    }
 
-    private VehicleDTO mapVehicleFromEntityToDTO(final VehicleEntity vehicle) {
-        return modelMapper.map(vehicle, VehicleDTO.class);
-    }
 
-    private Set<IntermediateStopDTO> mapIntermediateStopsFromEntityToDTO(final RideEntity rideEntity) {
-
-        final Set<IntermediateStopDTO> result = new HashSet<>();
-        for (final IntermediateStopEntity intermediateStopEntity : rideEntity.getIntermediateStops()) {
-
-            final IntermediateStopDTO intermediateStopDTO = modelMapper.map(intermediateStopEntity, IntermediateStopDTO.class);
-            intermediateStopDTO.setVehicleStationDTO(mapVehicleStationFromEntityToDTO(intermediateStopEntity.getVehicleStation()));
-            result.add(intermediateStopDTO);
-        }
-
-        return result;
-    }
-
-    private VehicleStationDTO mapVehicleStationFromEntityToDTO(final VehicleStationEntity vehicleStationEntity) {
-        return modelMapper.map(vehicleStationEntity, VehicleStationDTO.class);
-    }
 
 }

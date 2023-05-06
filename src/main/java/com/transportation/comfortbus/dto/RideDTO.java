@@ -27,7 +27,7 @@ public class RideDTO {
 
 
     private Set<IntermediateStopDTO> intermediateStops;
-//    private Set<TicketBookingEntity> tickets;
+    private Set<TicketDTO> tickets;
     private UserDTO administrator;
     private UserDTO driver;
     private VehicleDTO vehicleDTO;

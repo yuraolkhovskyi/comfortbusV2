@@ -1,18 +1,17 @@
 package com.transportation.comfortbus.rest;
 
 import com.transportation.comfortbus.dto.RideDTO;
+import com.transportation.comfortbus.dto.RideStatusDTO;
 import com.transportation.comfortbus.dto.SearchRideRequestDTO;
 import com.transportation.comfortbus.service.RideService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -87,6 +86,11 @@ public class RideRestController {
                 .setPwdEquipment(pwdEquipment)
                 .setIsDoubleDecker(isDoubleDecker);
         return rideService.getActiveRidesByParams(searchRideRequestDTO);
+    }
+
+    @GetMapping(value = "/{rideId}/status")
+    public RideStatusDTO getRidesByParams(@PathVariable(value = "rideId") UUID rideId) {
+        return rideService.getRideStatus(rideId);
     }
 
 }
