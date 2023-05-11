@@ -12,4 +12,6 @@ import org.springframework.stereotype.Service;
 public interface UserService {
 
     UserDTO mapUserFromEntityToDTO(final UserEntity administrator);
+
+    UserEntity save(final UserEntity userEntity);
 }

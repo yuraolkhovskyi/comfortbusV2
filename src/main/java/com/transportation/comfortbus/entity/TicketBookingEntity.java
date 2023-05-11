@@ -7,12 +7,14 @@ import com.transportation.comfortbus.entity.enumeration.PaymentType;
 import com.transportation.comfortbus.entity.enumeration.TicketBookingStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
 @Setter
+@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -48,17 +50,17 @@ public class TicketBookingEntity {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="ride_id")
+    @JoinColumn(name = "ride_id")
     private RideEntity ride;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="banking_card_id")
+    @JoinColumn(name = "banking_card_id")
     private BankingCardEntity bankingCard;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="client_id")
+    @JoinColumn(name = "client_id")
     private UserEntity client;
 
     @JsonIgnore

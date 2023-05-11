@@ -10,4 +10,6 @@ public interface BankingCardService {
 
     BankingCardDTO mapBankingCardFromEntityToDTO(final BankingCardEntity bankingCard);
 
+    BankingCardEntity save(final BankingCardEntity bankingCardEntity);
+
 }

@@ -1,14 +1,13 @@
 package com.transportation.comfortbus.dto;
 
+import com.transportation.comfortbus.dto.enumeration.RideFilterType;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -44,5 +43,6 @@ public class SearchRideRequestDTO {
     private Boolean seatBelts;
     private Boolean pwdEquipment;
     private Boolean isDoubleDecker;
+    private RideFilterType rideFilterType;
 
 }

@@ -1,7 +1,13 @@
 package com.transportation.comfortbus.service.impl;
 
-import com.transportation.comfortbus.dto.*;
-import com.transportation.comfortbus.entity.*;
+import com.transportation.comfortbus.dto.RideDTO;
+import com.transportation.comfortbus.dto.RideStatusDTO;
+import com.transportation.comfortbus.dto.SearchRideRequestDTO;
+import com.transportation.comfortbus.dto.VehicleDTO;
+import com.transportation.comfortbus.dto.enumeration.RideFilterType;
+import com.transportation.comfortbus.entity.PassengerSeatEntity;
+import com.transportation.comfortbus.entity.RideEntity;
+import com.transportation.comfortbus.entity.TicketBookingEntity;
 import com.transportation.comfortbus.entity.enumeration.RideStatus;
 import com.transportation.comfortbus.exception.SystemException;
 import com.transportation.comfortbus.exception.code.ServiceErrorCode;
@@ -10,8 +16,10 @@ import com.transportation.comfortbus.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,15 +37,45 @@ public class RideServiceImpl implements RideService {
     private final ModelMapper modelMapper;
 
     @Override
+    @Cacheable(value = "getActiveRidesByParams")
     public Set<RideDTO> getActiveRidesByParams(final SearchRideRequestDTO searchRideRequestDTO) {
         validateSearchRequest(searchRideRequestDTO);
 
         final List<RideEntity> rideEntities = rideRepository.findAll();
         final Set<RideDTO> rideDTOS = mapRideEntitiesToDO(rideEntities);
 
-        return rideDTOS.stream()
+        final Set<RideDTO> result = rideDTOS.stream()
                 .filter(rideDTO -> isMatchingTheCriteria(searchRideRequestDTO, rideEntities, rideDTO))
                 .collect(Collectors.toSet());
+
+        return sortRidesByFilter(searchRideRequestDTO, result);
+    }
+
+    private static Set<RideDTO> sortRidesByFilter(final SearchRideRequestDTO searchRideRequestDTO,
+                                                  final Set<RideDTO> rideDTOS) {
+        LinkedHashSet<RideDTO> result;
+        final RideFilterType rideFilterType = Optional.ofNullable(searchRideRequestDTO.getRideFilterType()).orElse(RideFilterType.PRICE);
+        switch (rideFilterType) {
+            case PRICE -> {
+                result = rideDTOS.stream().sorted(Comparator.comparing(RideDTO::getPrice)).collect(Collectors.toCollection(LinkedHashSet::new));
+            }
+            case DEPARTURE_TIME -> {
+                result = rideDTOS.stream().sorted(Comparator.comparing(RideDTO::getDepartureDate)).collect(Collectors.toCollection(LinkedHashSet::new));
+            }
+            case ARRIVAL_TIME -> {
+                result = rideDTOS.stream().sorted(Comparator.comparing(RideDTO::getArrivalDate)).collect(Collectors.toCollection(LinkedHashSet::new));
+            }
+            case RIDE_TIME_INTERVAL -> {
+                result = rideDTOS
+                        .stream()
+                        .sorted(Comparator.comparing(e -> Duration.between(e.getDepartureDate(), e.getArrivalDate()).toHours()))
+                        .collect(Collectors.toCollection(LinkedHashSet::new));
+            }
+
+            default ->
+                    result = rideDTOS.stream().sorted(Comparator.comparing(RideDTO::getPrice)).collect(Collectors.toCollection(LinkedHashSet::new));
+        }
+        return result;
     }
 
     @Override
@@ -251,8 +289,6 @@ public class RideServiceImpl implements RideService {
 
         return rideDTO;
     }
-
-
 
 
 }

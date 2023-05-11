@@ -12,3 +12,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+  cache:
+    cache-names: "getActiveRidesByParams"
+    caffeine:
+      spec: maximumSize=2000,expireAfterWrite=600s

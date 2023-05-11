@@ -3,6 +3,7 @@ package com.transportation.comfortbus.rest;
 import com.transportation.comfortbus.dto.RideDTO;
 import com.transportation.comfortbus.dto.RideStatusDTO;
 import com.transportation.comfortbus.dto.SearchRideRequestDTO;
+import com.transportation.comfortbus.dto.enumeration.RideFilterType;
 import com.transportation.comfortbus.service.RideService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,8 @@ public class RideRestController {
                                          @RequestParam(value = "additionalLuggage", required = false) Boolean additionalLuggage,
                                          @RequestParam(value = "seatBelts", required = false) Boolean seatBelts,
                                          @RequestParam(value = "pwdEquipment", required = false) Boolean pwdEquipment,
-                                         @RequestParam(value = "isDoubleDecker", required = false) Boolean isDoubleDecker
+                                         @RequestParam(value = "isDoubleDecker", required = false) Boolean isDoubleDecker,
+                                         @RequestParam(value = "filterBy", required = false) RideFilterType rideFilterType
     ) {
         final SearchRideRequestDTO searchRideRequestDTO = new SearchRideRequestDTO()
                 .setDepartureCity(departureCity)
@@ -84,7 +86,8 @@ public class RideRestController {
                 .setAdditionalLuggage(additionalLuggage)
                 .setSeatBelts(seatBelts)
                 .setPwdEquipment(pwdEquipment)
-                .setIsDoubleDecker(isDoubleDecker);
+                .setIsDoubleDecker(isDoubleDecker)
+                .setRideFilterType(rideFilterType);
         return rideService.getActiveRidesByParams(searchRideRequestDTO);
     }
 

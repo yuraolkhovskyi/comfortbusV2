@@ -19,4 +19,14 @@ public class BankingCardDTO {
     private LocalDateTime expirationDate;
     private String owner;
 
+
+    public BankingCardDTO(String cardNumber,
+                          Integer cvcCode,
+                          LocalDateTime expirationDate,
+                          String owner) {
+        this.cardNumber = cardNumber;
+        this.cvcCode = cvcCode;
+        this.expirationDate = expirationDate;
+        this.owner = owner;
+    }
 }
