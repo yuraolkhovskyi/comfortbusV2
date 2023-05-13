@@ -104,7 +104,7 @@ public class RideRestController {
     }
 
 
-    //driver admin
+    //admin driver
     @GetMapping(value = "/get/driver/{driverId}")
     public Set<RideDTO> getAllRidesByDriverId(@PathVariable Long driverId) {
         return rideService.getRidesByDriverId(driverId);
@@ -118,7 +118,7 @@ public class RideRestController {
     }
 
     //only admin access
-    @GetMapping(value = "/create")
+    @PostMapping(value = "/create")
     public RideDTO createRide(@RequestBody CreateRideDTO createRideDTO) {
         return rideService.createRide(createRideDTO);
     }
