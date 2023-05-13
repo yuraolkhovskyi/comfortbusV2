@@ -5,6 +5,7 @@ import com.transportation.comfortbus.entity.converter.RideStatusEntityConverter;
 import com.transportation.comfortbus.entity.enumeration.RideStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -45,36 +47,36 @@ public class RideEntity {
     private BigDecimal price;
 
     @JsonIgnore
-    @OneToMany(mappedBy="ride")
+    @OneToMany(mappedBy = "ride")
     private Set<IntermediateStopEntity> intermediateStops;
 
     @JsonIgnore
-    @OneToMany(mappedBy="ride")
+    @OneToMany(mappedBy = "ride")
     private Set<TicketBookingEntity> tickets;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="administrator_id")
+    @JoinColumn(name = "administrator_id")
     private UserEntity administrator;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="driver_id")
+    @JoinColumn(name = "driver_id")
     private UserEntity driver;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="departure_station_id")
+    @JoinColumn(name = "departure_station_id")
     private VehicleStationEntity departureStation;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="arrival_station_id")
+    @JoinColumn(name = "arrival_station_id")
     private VehicleStationEntity arrivalStation;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="vehicle_id")
+    @JoinColumn(name = "vehicle_id")
     private VehicleEntity vehicle;
 
 

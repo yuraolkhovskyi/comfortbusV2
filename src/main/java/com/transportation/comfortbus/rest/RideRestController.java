@@ -1,9 +1,8 @@
 package com.transportation.comfortbus.rest;
 
-import com.transportation.comfortbus.dto.RideDTO;
-import com.transportation.comfortbus.dto.RideStatusDTO;
-import com.transportation.comfortbus.dto.SearchRideRequestDTO;
+import com.transportation.comfortbus.dto.*;
 import com.transportation.comfortbus.dto.enumeration.RideFilterType;
+import com.transportation.comfortbus.entity.enumeration.RideStatus;
 import com.transportation.comfortbus.service.RideService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +21,7 @@ public class RideRestController {
 
     private final RideService rideService;
 
+    //admin driver client
     @GetMapping(value = "/search")
     public Set<RideDTO> getRidesByParams(@RequestParam(value = "departureCity") String departureCity,
                                          @RequestParam(value = "departureCountry") String departureCountry,
@@ -91,9 +91,49 @@ public class RideRestController {
         return rideService.getActiveRidesByParams(searchRideRequestDTO);
     }
 
+    //admin driver
     @GetMapping(value = "/{rideId}/status")
-    public RideStatusDTO getRidesByParams(@PathVariable(value = "rideId") UUID rideId) {
-        return rideService.getRideStatus(rideId);
+    public RideStatusDTO getRideStatusByRideId(@PathVariable(value = "rideId") UUID rideId) {
+        return rideService.getRideStatusByRideId(rideId);
+    }
+
+    //admin driver
+    @GetMapping(value = "/{rideId}/details")
+    public RideDTO getAllRideDetailsById(@PathVariable UUID rideId) {
+        return rideService.getAllRideDetailsById(rideId);
+    }
+
+
+    //driver admin
+    @GetMapping(value = "/get/driver/{driverId}")
+    public Set<RideDTO> getAllRidesByDriverId(@PathVariable Long driverId) {
+        return rideService.getRidesByDriverId(driverId);
+    }
+
+
+    //only admin access
+    @GetMapping(value = "/get/admin/{adminId}")
+    public Set<RideDTO> getAllRidesByAdminId(@PathVariable Long adminId) {
+        return rideService.getRidesByAdminId(adminId);
+    }
+
+    //only admin access
+    @GetMapping(value = "/create")
+    public RideDTO createRide(@RequestBody CreateRideDTO createRideDTO) {
+        return rideService.createRide(createRideDTO);
+    }
+
+    //admin
+    @PostMapping(value = "/{rideId}/delete")
+    public void deleteRide(@PathVariable UUID rideId) {
+        rideService.deleteRideById(rideId);
+    }
+
+    //admin
+    @PostMapping(value = "/{rideId}/change-status/{rideStatus}")
+    public ChangeRideStatusDTO changeRideStatus(@PathVariable final UUID rideId,
+                                                @PathVariable final RideStatus rideStatus) {
+        return rideService.changeRideStatus(rideId, rideStatus);
     }
 
 }

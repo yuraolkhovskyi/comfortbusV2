@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Data
 public class IntermediateStopDTO {
 
+    private Long id;
     private LocalDateTime stopStartTime;
     private LocalDateTime stopEndTime;
     private VehicleStationDTO vehicleStationDTO;

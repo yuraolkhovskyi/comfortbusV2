@@ -20,21 +20,25 @@ public class TicketRestController {
 
     private final TicketService ticketService;
 
+    //admin driver
     @GetMapping(value = "/get/ride/{rideId}")
     public Set<TicketDTO> getTicketBookingsByRideId(@PathVariable(value = "rideId") UUID rideId) {
         return ticketService.getTicketBookingsByRideId(rideId);
     }
 
+    //admin driver client
     @GetMapping(value = "/get/ride/{rideId}/available-passenger-seat")
     public Set<PassengerSeatDTO> getAvailablePassengerSeatForBookingByRideId(@PathVariable(value = "rideId") UUID rideId) {
         return ticketService.getAvailablePassengerSeatForBookingByRideId(rideId);
     }
 
+    //admin driver client
     @PostMapping(value = "/book")
     public BookTicketDTO bookTicket(@RequestBody BookTicketDTO bookTicketDTO) {
         return ticketService.bookTicket(bookTicketDTO);
     }
 
+    //admin driver client
     @PostMapping(value = "/{ticketId}/change-status/{ticketStatus}")
     public TicketDTO changeStatusOfATicketBooking(@PathVariable Long ticketId,
                                                   @PathVariable TicketBookingStatus ticketStatus) {

@@ -4,6 +4,7 @@ package com.transportation.comfortbus.service.impl;
 import com.transportation.comfortbus.dto.IntermediateStopDTO;
 import com.transportation.comfortbus.entity.IntermediateStopEntity;
 import com.transportation.comfortbus.entity.RideEntity;
+import com.transportation.comfortbus.repository.IntermediateStopRepository;
 import com.transportation.comfortbus.service.IntermediateStopService;
 import com.transportation.comfortbus.service.VehicleStationService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.Set;
 public class IntermediateStopServiceImpl implements IntermediateStopService {
 
     private final ModelMapper modelMapper;
+    private final IntermediateStopRepository intermediateStopRepository;
     private final VehicleStationService vehicleStationService;
 
     @Override
@@ -31,6 +33,20 @@ public class IntermediateStopServiceImpl implements IntermediateStopService {
             final IntermediateStopDTO intermediateStopDTO = modelMapper.map(intermediateStopEntity, IntermediateStopDTO.class);
             intermediateStopDTO.setVehicleStationDTO(vehicleStationService.mapVehicleStationFromEntityToDTO(intermediateStopEntity.getVehicleStation()));
             result.add(intermediateStopDTO);
+        }
+
+        return result;
+    }
+
+    @Override
+    public Set<IntermediateStopEntity> mapIntermediateStopsFromDTOsToEntities(final Set<Long> intermediateStopDTOS) {
+
+        final Set<IntermediateStopEntity> result = new HashSet<>();
+
+        for (Long intermediateStopId : intermediateStopDTOS) {
+            IntermediateStopEntity intermediateStopEntity = intermediateStopRepository
+                    .findById(intermediateStopId).orElseThrow();
+            result.add(intermediateStopEntity);
         }
 
         return result;

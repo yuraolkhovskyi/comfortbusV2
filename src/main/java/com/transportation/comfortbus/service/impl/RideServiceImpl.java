@@ -1,13 +1,8 @@
 package com.transportation.comfortbus.service.impl;
 
-import com.transportation.comfortbus.dto.RideDTO;
-import com.transportation.comfortbus.dto.RideStatusDTO;
-import com.transportation.comfortbus.dto.SearchRideRequestDTO;
-import com.transportation.comfortbus.dto.VehicleDTO;
+import com.transportation.comfortbus.dto.*;
 import com.transportation.comfortbus.dto.enumeration.RideFilterType;
-import com.transportation.comfortbus.entity.PassengerSeatEntity;
-import com.transportation.comfortbus.entity.RideEntity;
-import com.transportation.comfortbus.entity.TicketBookingEntity;
+import com.transportation.comfortbus.entity.*;
 import com.transportation.comfortbus.entity.enumeration.RideStatus;
 import com.transportation.comfortbus.exception.SystemException;
 import com.transportation.comfortbus.exception.code.ServiceErrorCode;
@@ -18,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.Duration;
 import java.util.*;
@@ -45,6 +41,7 @@ public class RideServiceImpl implements RideService {
         final Set<RideDTO> rideDTOS = mapRideEntitiesToDO(rideEntities);
 
         final Set<RideDTO> result = rideDTOS.stream()
+                .filter(e -> e.getStatus() == RideStatus.ACTIVE)
                 .filter(rideDTO -> isMatchingTheCriteria(searchRideRequestDTO, rideEntities, rideDTO))
                 .collect(Collectors.toSet());
 
@@ -79,7 +76,7 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public RideStatusDTO getRideStatus(final UUID rideId) {
+    public RideStatusDTO getRideStatusByRideId(final UUID rideId) {
         final RideDTO rideDTO = mapRideFromEntityToDTO(findById(rideId));
 
         final RideStatusDTO result = new RideStatusDTO();
@@ -98,6 +95,89 @@ public class RideServiceImpl implements RideService {
     @Override
     public RideEntity findById(final UUID rideId) {
         return rideRepository.findById(rideId).orElseThrow();
+    }
+
+    @Override
+    public RideDTO getAllRideDetailsById(final UUID rideId) {
+        final RideEntity rideEntity = rideRepository.findById(rideId).orElseThrow();
+        return mapRideEntitiesToDO(List.of(rideEntity)).stream().findFirst().orElseThrow();
+    }
+
+    @Override
+    public Set<RideDTO> getRidesByDriverId(Long driverId) {
+        final UserEntity driver = userService.findById(driverId);
+        final Set<RideEntity> allByDriverId = rideRepository.findAllByDriverId(driver);
+        return mapRideEntitiesToDO(new ArrayList<>(allByDriverId));
+    }
+
+    @Override
+    public Set<RideDTO> getRidesByAdminId(Long adminId) {
+        final UserEntity administrator = userService.findById(adminId);
+        final Set<RideEntity> allByDriverId = rideRepository.findAllByAdminId(administrator);
+        return mapRideEntitiesToDO(new ArrayList<>(allByDriverId));
+
+    }
+
+    @Override
+    public RideDTO createRide(final CreateRideDTO rideDTO) {
+        final RideEntity rideEntity = new RideEntity();
+
+        rideEntity.setDepartureDate(rideDTO.getDepartureDate());
+        rideEntity.setArrivalDate(rideDTO.getArrivalDate());
+        rideEntity.setStatus(RideStatus.ACTIVE);
+        rideEntity.setDirect(rideDTO.isDirect());
+        rideEntity.setPrice(rideDTO.getPrice());
+
+        final Set<IntermediateStopEntity> intermediateStopEntities = intermediateStopService
+                .mapIntermediateStopsFromDTOsToEntities(rideDTO.getIntermediateStops());
+        rideEntity.setIntermediateStops(intermediateStopEntities);
+        rideEntity.setTickets(null);
+        rideEntity.setAdministrator(userService.findById(rideDTO.getAdministratorId()));
+        rideEntity.setDriver(userService.findById(rideDTO.getDriverId()));
+        rideEntity.setDepartureStation(vehicleStationService.findById(rideDTO.getDepartureStationId()));
+        rideEntity.setArrivalStation(vehicleStationService.findById(rideDTO.getArrivalStationId()));
+        rideEntity.setVehicle(vehicleService.findById(rideDTO.getVehicleId()));
+
+        RideEntity save = rideRepository.save(rideEntity);
+
+        return mapRideEntitiesToDO(List.of(save)).stream().findFirst().orElseThrow();
+    }
+
+    @Override
+    public void deleteRideById(final UUID rideId) {
+        rideRepository.deleteById(rideId);
+    }
+
+    @Override
+    public ChangeRideStatusDTO changeRideStatus(final UUID rideId, final RideStatus statusSwitchTo) {
+
+        final RideEntity rideEntity = rideRepository.findById(rideId).orElseThrow();
+
+
+        final ChangeRideStatusDTO result = new ChangeRideStatusDTO();
+        switch (statusSwitchTo) {
+            case ACTIVE -> {
+                rideEntity.setStatus(RideStatus.ACTIVE);
+            }
+
+            case IN_RIDE -> {
+                rideEntity.setStatus(RideStatus.IN_RIDE);
+//                coordinatesService.monitorCoordinatesByRideId(rideEntity.getId());
+            }
+
+            case CANCELLED -> {
+                rideEntity.setStatus(RideStatus.CANCELLED);
+//                ticketService.declineBookedTicketsByRideId(rideEntity.getId())
+            }
+
+            case FINISHED -> {
+                rideEntity.setStatus(RideStatus.FINISHED);
+//                emailService.sendEmailsForPassengerToLeaveFeedback(rideEntity.getTickets());
+            }
+        }
+        RideEntity save = rideRepository.save(rideEntity);
+
+        return result.setId(save.getId()).setRideStatus(save.getStatus());
     }
 
     private boolean isMatchingTheCriteria(final SearchRideRequestDTO searchRideRequestDTO,
@@ -273,6 +353,9 @@ public class RideServiceImpl implements RideService {
 
     private Integer getNumberOfTotalBookedSeats(final Set<TicketBookingEntity> tickets) {
         int sum = 0;
+        if (CollectionUtils.isEmpty(tickets)) {
+            return sum;
+        }
         for (TicketBookingEntity ticket : tickets) {
             Set<PassengerSeatEntity> passengerSeats = ticket.getPassengerSeats();
             int size = passengerSeats.size();

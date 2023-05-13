@@ -3,6 +3,7 @@ package com.transportation.comfortbus.service.impl;
 
 import com.transportation.comfortbus.dto.VehicleDTO;
 import com.transportation.comfortbus.entity.VehicleEntity;
+import com.transportation.comfortbus.repository.VehicleRepository;
 import com.transportation.comfortbus.service.VehicleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +16,16 @@ import org.springframework.stereotype.Service;
 public class VehicleServiceImpl implements VehicleService {
 
     private final ModelMapper modelMapper;
+    private final VehicleRepository vehicleRepository;
 
 
     @Override
     public VehicleDTO mapVehicleFromEntityToDTO(VehicleEntity vehicleEntity) {
         return modelMapper.map(vehicleEntity, VehicleDTO.class);
+    }
+
+    @Override
+    public VehicleEntity findById(Long vehicleId) {
+        return vehicleRepository.findById(vehicleId).orElseThrow();
     }
 }
