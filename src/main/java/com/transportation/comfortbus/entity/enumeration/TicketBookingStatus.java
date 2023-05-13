@@ -11,7 +11,6 @@ import static com.transportation.comfortbus.exception.code.ServiceErrorCode.INTE
 @Slf4j
 public enum TicketBookingStatus {
 
-    // TODO: 01.05.2023
     BOOKED(0),
     PAID(1),
     CANCELLED(2);
